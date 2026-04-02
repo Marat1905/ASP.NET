@@ -70,11 +70,29 @@ public class EmployeesController(
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<EmployeeResponse>> Update(
-        [FromRoute] Guid id,
-        [FromBody] EmployeeUpdateRequest request,
-        CancellationToken ct)
+    [FromRoute] Guid id,
+    [FromBody] EmployeeUpdateRequest request,
+    CancellationToken ct)
     {
-        throw new NotImplementedException();
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var employee = await employeeRepository.GetById(id, ct);
+        if (employee == null)
+            return NotFound();
+
+        var role = await roleRepository.GetById(request.RoleId, ct);
+        if (role == null)
+            return BadRequest($"Role with Id '{request.RoleId}' not found.");
+
+        employee.FirstName = request.FirstName;
+        employee.LastName = request.LastName;
+        employee.Email = request.Email;
+        employee.Role = role;
+
+        await employeeRepository.Update(employee, ct);
+
+        return Ok(Mapper.ToEmployeeResponse(employee));
     }
 
     /// <summary>
