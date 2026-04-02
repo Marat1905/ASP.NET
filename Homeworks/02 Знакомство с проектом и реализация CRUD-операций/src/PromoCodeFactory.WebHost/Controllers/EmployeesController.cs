@@ -102,9 +102,18 @@ public class EmployeesController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(
-        [FromRoute] Guid id,
-        CancellationToken ct)
+    [FromRoute] Guid id,
+    CancellationToken ct)
     {
-        throw new NotImplementedException();
+        try
+        {
+            await employeeRepository.Delete(id, ct);
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
     }
 }
