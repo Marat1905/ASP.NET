@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  promocode-factory-api:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    ports:
+      - "8091:8080"          # Хост:8091 → Контейнер:8080
+    volumes:
+      - db:/app/db           # Том для сохранения SQLite БД
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # Переопределяем строку подключения на путь внутри контейнера
+      - ConnectionStrings__PromocodeFactoryDb=Data Source=/app/db/PromoCodeFactoryDb.sqlite
+    restart: unless-stopped
+
+volumes:
+  db:
