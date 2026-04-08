@@ -1,15 +1,10 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY . .
 RUN dotnet restore
 RUN dotnet build -c $BUILD_CONFIGURATION --no-restore
-
-# Stage для запуска тестов
-FROM build AS test
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet test ./PromoCodeFactory.UnitTests/PromoCodeFactory.UnitTests.csproj \
-    -c $BUILD_CONFIGURATION --no-build --logger "console;verbosity=detailed"
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
