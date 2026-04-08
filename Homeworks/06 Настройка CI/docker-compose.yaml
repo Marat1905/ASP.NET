@@ -1,0 +1,17 @@
+version: '3.8'
+# docker-compose up --build
+services:
+  promocode-factory-api:
+    image: ghcr.io/marat1905/asp.net:latest
+    container_name: promocode-factory-api
+    restart: always
+    ports:
+      - "8091:8080"
+    volumes:
+      - db:/app/db
+    environment:
+      - "ConnectionStrings:PromocodeFactoryDb=Filename=/app/db/PromoCodeFactoryDb.sqlite"
+      - "ASPNETCORE_ENVIRONMENT=Production"
+
+volumes:
+  db:
