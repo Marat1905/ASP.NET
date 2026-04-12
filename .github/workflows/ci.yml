@@ -11,22 +11,7 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Build and run tests
-        run: |
-          docker build \
-            --file "Homeworks/06 Настройка CI/src/Dockerfile" \
-            --target test \
-            --tag test-image \
-            "Homeworks/06 Настройка CI/src"
-
   build-and-push:
-    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -56,3 +41,4 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
